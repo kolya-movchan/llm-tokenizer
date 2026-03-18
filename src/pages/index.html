@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token ROI Calculator — Genius Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gs-orange:   #E8420A;
+    --gs-orange-h: #FF5520;
+    --gs-orange-lt:#FFF0EB;
+    --gs-navy:     #1A1F3A;
+    --gs-navy-80:  #2D3352;
+    --gs-navy-40:  #8C91AA;
+    --gs-navy-10:  #F0F1F5;
+    --gs-white:    #FFFFFF;
+    --gs-gray:     #F6F7FA;
+    --gs-border:   #E4E6EF;
+    --font-display:'Nunito', sans-serif;
+    --font-body:   'Manrope', sans-serif;
+    --r-sm: 10px;
+    --r-md: 16px;
+    --r-lg: 22px;
+    --r-xl: 32px;
+    --r-pill: 100px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font-body);background:var(--gs-white);color:var(--gs-navy);min-height:100vh;overflow-x:hidden}
+
+  .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;opacity:0.06}
+  .blob-1{width:360px;height:360px;background:var(--gs-orange);top:-100px;right:-100px}
+  .blob-2{width:220px;height:220px;background:var(--gs-navy);bottom:40px;left:-70px}
+
+  .page{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 24px 80px}
+
+  header{padding:36px 0 44px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px}
+
+  .logo-wrap{display:flex;align-items:center;gap:10px}
+  .logo-mark{width:46px;height:46px;background:var(--gs-orange);border-radius:13px;display:flex;align-items:center;justify-content:center}
+  .logo-mark svg{width:24px;height:24px}
+  .logo-text{display:flex;flex-direction:column;line-height:1.15}
+  .logo-text strong{font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--gs-navy);letter-spacing:-0.01em}
+  .logo-text span{font-size:11px;font-weight:500;color:var(--gs-navy-40);letter-spacing:0.07em;text-transform:uppercase}
+
+  .header-main{flex:1;padding-top:2px}
+  .header-pill{display:inline-flex;align-items:center;gap:6px;background:var(--gs-orange-lt);color:var(--gs-orange);font-size:12px;font-weight:700;padding:5px 14px;border-radius:var(--r-pill);letter-spacing:0.04em;text-transform:uppercase}
+  .h-dot{width:6px;height:6px;border-radius:50%;background:var(--gs-orange);animation:blink 2s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+  .page-title{font-family:var(--font-display);font-weight:900;font-size:clamp(28px,4.5vw,42px);color:var(--gs-navy);line-height:1.07;margin-top:12px;letter-spacing:-0.02em}
+  .page-title .accent{color:var(--gs-orange)}
+  .page-sub{font-size:14px;font-weight:400;color:var(--gs-navy-40);margin-top:7px}
+
+  .block{background:var(--gs-white);border:1.5px solid var(--gs-border);border-radius:var(--r-xl);padding:28px 30px;margin-bottom:16px;position:relative;overflow:hidden;transition:box-shadow 0.2s;animation:rise 0.4s ease both}
+  .block:hover{box-shadow:0 6px 28px rgba(26,31,58,0.07)}
+  .block:nth-child(1){animation-delay:0.05s}
+  .block:nth-child(2){animation-delay:0.10s}
+  .block:nth-child(3){animation-delay:0.15s}
+  .block:nth-child(4){animation-delay:0.20s}
+  .block:nth-child(5){animation-delay:0.25s}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  .block-accent-bar{position:absolute;top:0;left:0;width:5px;height:100%;background:var(--gs-orange);border-radius:var(--r-xl) 0 0 var(--r-xl)}
+  .block-num{position:absolute;top:16px;right:20px;font-family:var(--font-display);font-weight:900;font-size:66px;color:var(--gs-navy-10);line-height:1;pointer-events:none;user-select:none;letter-spacing:-0.03em}
+
+  .block-title{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--gs-navy);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .step-badge{width:26px;height:26px;border-radius:8px;background:var(--gs-orange);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);flex-shrink:0}
+
+  textarea{width:100%;background:var(--gs-gray);border:1.5px solid var(--gs-border);border-radius:var(--r-md);padding:14px 16px;font-family:var(--font-body);font-size:14px;color:var(--gs-navy);resize:vertical;min-height:84px;line-height:1.6;transition:border-color 0.2s}
+  textarea:focus{outline:none;border-color:var(--gs-orange);background:#fff}
+  textarea::placeholder{color:var(--gs-navy-40)}
+
+  .token-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .tstat{background:var(--gs-gray);border-radius:var(--r-md);padding:14px 16px;display:flex;flex-direction:column;gap:4px;border:1.5px solid transparent;transition:border-color 0.2s}
+  .tstat.hi{border-color:var(--gs-orange);background:var(--gs-orange-lt)}
+  .tstat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--gs-navy-40)}
+  .tstat.hi .tstat-label{color:var(--gs-orange)}
+  .tstat-val{font-family:var(--font-display);font-weight:900;font-size:24px;color:var(--gs-navy);line-height:1}
+  .tstat.hi .tstat-val{color:var(--gs-orange)}
+
+  .analogy-bar{margin-top:12px;background:var(--gs-navy);border-radius:var(--r-md);padding:14px 18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65}
+  .analogy-bar strong{color:#fff;font-weight:600}
+  .analogy-bar .tag{color:var(--gs-orange);font-weight:700}
+
+  .model-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:540px){.model-grid{grid-template-columns:1fr}}
+
+  .model-card{background:var(--gs-gray);border:2px solid var(--gs-border);border-radius:var(--r-lg);padding:18px 20px;cursor:pointer;transition:all 0.15s;position:relative}
+  .model-card:hover{border-color:var(--gs-navy-40);transform:translateY(-2px);box-shadow:0 4px 16px rgba(26,31,58,0.08)}
+  .model-card.active{border-color:var(--gs-orange);background:var(--gs-orange-lt)}
+  .model-card.active::after{content:'✓';position:absolute;top:14px;right:16px;width:22px;height:22px;background:var(--gs-orange);color:white;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center}
+
+  .mc-brand{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gs-navy-40);margin-bottom:3px}
+  .model-card.active .mc-brand{color:var(--gs-orange)}
+  .mc-name{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--gs-navy);margin-bottom:4px}
+  .mc-desc{font-size:12px;color:var(--gs-navy-40);line-height:1.45;margin-bottom:12px}
+  .mc-prices{display:flex;gap:6px;flex-wrap:wrap}
+  .price-pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:var(--r-pill)}
+  .price-pill.in{background:#EBF4FF;color:#185FA5}
+  .price-pill.out{background:#FFF8E6;color:#996600}
+
+  .mode-tabs{display:inline-flex;gap:4px;background:var(--gs-gray);border-radius:var(--r-pill);padding:4px;margin-bottom:22px;border:1.5px solid var(--gs-border)}
+  .mode-tab{padding:8px 22px;border-radius:var(--r-pill);font-size:13px;font-weight:600;cursor:pointer;color:var(--gs-navy-40);transition:all 0.15s;border:none;background:transparent;font-family:var(--font-body)}
+  .mode-tab.active{background:var(--gs-orange);color:white}
+
+  .param-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+  .param-group{display:flex;flex-direction:column;gap:6px}
+  .param-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--gs-navy-40)}
+  .param-group input{background:var(--gs-gray);border:1.5px solid var(--gs-border);border-radius:var(--r-md);padding:11px 14px;font-size:16px;font-weight:700;color:var(--gs-navy);font-family:var(--font-display);transition:border-color 0.15s,background 0.15s;width:100%}
+  .param-group input:focus{outline:none;border-color:var(--gs-orange);background:#fff}
+  .param-hint{font-size:11px;color:var(--gs-navy-40);line-height:1.4}
+
+  .result-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:16px}
+  @media(max-width:520px){.result-grid{grid-template-columns:1fr 1fr}}
+
+  .rcard{background:var(--gs-gray);border-radius:var(--r-lg);padding:18px 20px;border:1.5px solid var(--gs-border)}
+  .rcard.primary{background:var(--gs-orange);border-color:var(--gs-orange);position:relative;overflow:hidden}
+  .rcard.primary::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.12)}
+  .rcard-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gs-navy-40);margin-bottom:8px}
+  .rcard.primary .rcard-label{color:rgba(255,255,255,0.7)}
+  .rcard-val{font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--gs-navy);line-height:1}
+  .rcard.primary .rcard-val{color:white;font-size:30px}
+
+  .verdict-box{background:var(--gs-navy);border-radius:var(--r-lg);padding:18px 22px}
+  .verdict-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gs-orange);margin-bottom:6px}
+  .verdict-text{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.7}
+  .verdict-text strong{color:white;font-weight:600}
+
+  .compare-wrap{border:1.5px solid var(--gs-border);border-radius:var(--r-lg);overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{background:var(--gs-navy)}
+  th{padding:11px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5)}
+  td{padding:13px 16px;border-top:1.5px solid var(--gs-border);color:var(--gs-navy-40)}
+  tr.active-row td{background:var(--gs-orange-lt);color:var(--gs-navy)}
+  tr.active-row td:first-child{color:var(--gs-orange);font-weight:700}
+  .cost-num{font-family:var(--font-display);font-weight:800;color:var(--gs-navy)}
+  tr.active-row .cost-num{color:var(--gs-orange)}
+
+  footer{display:flex;align-items:center;justify-content:space-between;padding:24px 0 0;border-top:1.5px solid var(--gs-border);flex-wrap:wrap;gap:10px;margin-top:24px}
+  footer p{font-size:12px;color:var(--gs-navy-40)}
+  footer strong{color:var(--gs-orange)}
+
+  #panel-monthly{display:none}
+  .pop{animation:pop 0.25s ease}
+  @keyframes pop{0%{transform:scale(0.94);opacity:0.5}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="page">
+
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 12.5L10 17.5L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <strong>GENIUS space</strong>
+        <span>AI Автоматизатор</span>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="header-pill"><div class="h-dot"></div>Актуально березень 2026</div>
+      <div class="page-title">LLM Token<br><span class="accent">ROI Calculator</span></div>
+      <div class="page-sub">Воркшоп · Модуль 1 · Стратегічні основи AI</div>
+    </div>
+  </header>
+
+  <!-- 01 -->
+  <div class="block">
+    <div class="block-accent-bar"></div>
+    <div class="block-num">01</div>
+    <div class="block-title"><div class="step-badge">1</div>Що таке токен</div>
+    <textarea id="text-input" placeholder="Введи будь-який текст — побачиш скільки в ньому токенів..."></textarea>
+    <div class="token-stats">
+      <div class="tstat"><span class="tstat-label">Символів</span><span class="tstat-val" id="char-count">0</span></div>
+      <div class="tstat"><span class="tstat-label">Слів ~</span><span class="tstat-val" id="word-count">0</span></div>
+      <div class="tstat hi"><span class="tstat-label">Токенів ~</span><span class="tstat-val" id="token-count">0</span></div>
+    </div>
+    <div class="analogy-bar" id="analogy-bar">
+      Токен — це не слово і не символ. Це <strong>шматочок тексту</strong>: ~4 символи для EN, ~2–3 символи для UA. <span class="tag">За кожен токен — платиш.</span> Введи текст вгорі щоб побачити в дії.
+    </div>
+  </div>
+
+  <!-- 02 -->
+  <div class="block">
+    <div class="block-accent-bar"></div>
+    <div class="block-num">02</div>
+    <div class="block-title"><div class="step-badge">2</div>Вибери модель</div>
+    <div class="model-grid" id="model-grid"></div>
+  </div>
+
+  <!-- 03 -->
+  <div class="block">
+    <div class="block-accent-bar"></div>
+    <div class="block-num">03</div>
+    <div class="block-title"><div class="step-badge">3</div>Параметри використання</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-single" onclick="switchTab('single')">Один запит</button>
+      <button class="mode-tab" id="tab-monthly" onclick="switchTab('monthly')">Бізнес / місяць</button>
+    </div>
+    <div id="panel-single">
+      <div class="param-row">
+        <div class="param-group">
+          <span class="param-label">Input токени</span>
+          <input type="number" id="s-input" value="500" min="1">
+          <span class="param-hint">Твій промпт + контекст розмови</span>
+        </div>
+        <div class="param-group">
+          <span class="param-label">Output токени</span>
+          <input type="number" id="s-output" value="300" min="1">
+          <span class="param-hint">Те що AI генерує у відповідь</span>
+        </div>
+      </div>
+    </div>
+    <div id="panel-monthly">
+      <div class="param-row">
+        <div class="param-group">
+          <span class="param-label">Запитів / день</span>
+          <input type="number" id="m-calls" value="100" min="1">
+          <span class="param-hint">Скільки разів звертаєтесь до AI</span>
+        </div>
+        <div class="param-group">
+          <span class="param-label">Input / запит</span>
+          <input type="number" id="m-input" value="800" min="1">
+          <span class="param-hint">Середній розмір промпту</span>
+        </div>
+        <div class="param-group">
+          <span class="param-label">Output / запит</span>
+          <input type="number" id="m-output" value="500" min="1">
+          <span class="param-hint">Середній розмір відповіді</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 -->
+  <div class="block">
+    <div class="block-accent-bar"></div>
+    <div class="block-num">04</div>
+    <div class="block-title"><div class="step-badge">4</div>Результат</div>
+    <div class="result-grid" id="result-cards"></div>
+    <div class="verdict-box" id="verdict-box"></div>
+  </div>
+
+  <!-- 05 -->
+  <div class="block">
+    <div class="block-accent-bar"></div>
+    <div class="block-num">05</div>
+    <div class="block-title"><div class="step-badge">5</div>Порівняння моделей</div>
+    <div class="compare-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Модель</th><th>In / 1M</th><th>Out / 1M</th><th>Один запит</th><th id="col-period">Місяць</th>
+          </tr>
+        </thead>
+        <tbody id="compare-body"></tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--gs-navy-40);margin-top:10px;letter-spacing:0.02em">
+      Ціни в USD · API тарифи · Актуально березень 2026 · Виділено вибрану модель
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 <strong>Genius Space</strong> · AI Автоматизатор</p>
+    <p>Калькулятор для воркшопу — освітні цілі</p>
+  </footer>
+
+</div>
+
+<script>
+const MODELS=[
+  {id:'gpt4o', brand:'OpenAI',    name:'GPT-4o',        desc:'Флагман OpenAI, найвідоміша модель',  input:2.5, output:10},
+  {id:'gpt41', brand:'OpenAI',    name:'GPT-4.1',       desc:'Новіша версія — дешевша та швидша',   input:2.0, output:8},
+  {id:'sonnet',brand:'Anthropic', name:'Claude Sonnet', desc:'Збалансована: потужність і вартість', input:3.0, output:15},
+  {id:'opus',  brand:'Anthropic', name:'Claude Opus',   desc:'Найпотужніша від Anthropic',          input:5.0, output:25},
+];
+let selId='gpt4o', mode='single';
+const sel=()=>MODELS.find(m=>m.id===selId);
+
+function switchTab(t){
+  mode=t;
+  document.getElementById('tab-single').className='mode-tab'+(t==='single'?' active':'');
+  document.getElementById('tab-monthly').className='mode-tab'+(t==='monthly'?' active':'');
+  document.getElementById('panel-single').style.display=t==='single'?'block':'none';
+  document.getElementById('panel-monthly').style.display=t==='monthly'?'block':'none';
+  document.getElementById('col-period').textContent=t==='monthly'?'Місяць':'—';
+  update();
+}
+function getP(){
+  if(mode==='single') return{calls:1,input:+document.getElementById('s-input').value||0,output:+document.getElementById('s-output').value||0};
+  return{calls:(+document.getElementById('m-calls').value||0)*30,input:+document.getElementById('m-input').value||0,output:+document.getElementById('m-output').value||0};
+}
+function calc(m,p){
+  const ic=(p.input*p.calls/1e6)*m.input, oc=(p.output*p.calls/1e6)*m.output;
+  return{total:ic+oc,ic,oc,per:(ic+oc)/Math.max(p.calls,1)};
+}
+function fmt(n){
+  if(n<0.00005) return '<$0.0001';
+  if(n<0.001)   return '$'+n.toFixed(5);
+  if(n<0.01)    return '$'+n.toFixed(4);
+  if(n<1)       return '$'+n.toFixed(3);
+  if(n<10)      return '$'+n.toFixed(2);
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function verdict(per){
+  if(per<0.0005) return`<strong>Мікровартість.</strong> Один запит — менше 0.05¢. Навіть 50 000 запитів на місяць — це ${fmt(per*50000)}. Масштабуй без страху.`;
+  if(per<0.005)  return`<strong>Дуже доступно.</strong> Один запит — як SMS. При 1 000 запитах/місяць: ${fmt(per*1000)}. Легко вкладається в бюджет будь-якого відділу.`;
+  if(per<0.05)   return`<strong>Помірна вартість.</strong> Один запит — як листівка. Для великих об'ємів — варто оптимізувати промпти або взяти дешевшу модель для рутини.`;
+  return`<strong>Зверни увагу на масштаб.</strong> При великому трафіку витрати ростуть швидко. Використовуй дорогу модель тільки де реально потрібна якість.`;
+}
+function update(){
+  const p=getP(), m=sel(), r=calc(m,p), isM=mode==='monthly', main=isM?r.total:r.per;
+  document.getElementById('result-cards').innerHTML=`
+    <div class="rcard primary"><div class="rcard-label">${isM?'Всього / місяць':'Вартість запиту'}</div><div class="rcard-val pop">${fmt(main)}</div></div>
+    <div class="rcard"><div class="rcard-label">Input cost</div><div class="rcard-val">${fmt(isM?r.ic:r.ic/Math.max(p.calls,1))}</div></div>
+    <div class="rcard"><div class="rcard-label">Output cost</div><div class="rcard-val">${fmt(isM?r.oc:r.oc/Math.max(p.calls,1))}</div></div>`;
+  document.getElementById('verdict-box').innerHTML=`<div class="verdict-label">Що це означає для бізнесу</div><div class="verdict-text">${verdict(r.per)}</div>`;
+  document.getElementById('compare-body').innerHTML=MODELS.map(mo=>{
+    const rc=calc(mo,p), a=mo.id===selId;
+    return`<tr class="${a?'active-row':''}">
+      <td><span style="font-family:var(--font-display);font-weight:800">${mo.name}</span><br><span style="font-size:11px;color:var(--gs-navy-40)">${mo.brand}</span></td>
+      <td>$${mo.input.toFixed(2)}</td><td>$${mo.output.toFixed(2)}</td>
+      <td class="cost-num">${fmt(rc.per)}</td>
+      <td>${isM?'<span class="cost-num">'+fmt(rc.total)+'</span>':'—'}</td></tr>`;
+  }).join('');
+}
+function renderModels(){
+  document.getElementById('model-grid').innerHTML=MODELS.map(m=>`
+    <div class="model-card ${m.id===selId?'active':''}" onclick="selectModel('${m.id}')">
+      <div class="mc-brand">${m.brand}</div>
+      <div class="mc-name">${m.name}</div>
+      <div class="mc-desc">${m.desc}</div>
+      <div class="mc-prices"><span class="price-pill in">In $${m.input}/M</span><span class="price-pill out">Out $${m.output}/M</span></div>
+    </div>`).join('');
+}
+function selectModel(id){selId=id;renderModels();update();}
+
+document.getElementById('text-input').addEventListener('input',function(){
+  const txt=this.value, chars=txt.length;
+  const words=txt.trim()?txt.trim().split(/\s+/).length:0;
+  const en=(txt.match(/[a-zA-Z0-9]/g)||[]).length;
+  const tokens=Math.ceil(en/4+(chars-en)/2.5);
+  document.getElementById('char-count').textContent=chars;
+  document.getElementById('word-count').textContent=words;
+  document.getElementById('token-count').textContent=tokens;
+  if(tokens>0){
+    const m=sel();
+    document.getElementById('analogy-bar').innerHTML=
+      `<strong>${tokens} токенів</strong> — це приблизно <strong>${(tokens/750).toFixed(1)} сторінок A4</strong>. `+
+      `Input з цього тексту коштуватиме <span class="tag">${fmt((tokens/1e6)*m.input)}</span> на моделі ${m.name}.`;
+  }
+});
+
+['s-input','s-output','m-calls','m-input','m-output'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',update);
+});
+
+renderModels();
+update();
+</script>
+</body>
+</html>
