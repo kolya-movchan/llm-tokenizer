@@ -1,0 +1,38 @@
+{
+  "en": {
+    "h1": "Welcome to Astro Basics"
+  },
+  "fr": {
+    "h1": "Bienvenue à Astro Basics"
+  },
+  "it": {
+    "h1": "Benvenuto in Astro Basics"
+  },
+  "de": {
+    "h1": "Willkommen bei Astro Basics"
+  },
+  "es": {
+    "h1": "Bienvenido a Astro Basics"
+  },
+  "pt": {
+    "h1": "Bem-vindo ao Astro Basics"
+  },
+  "pl": {
+    "h1": "Witamy w Astro Basics"
+  },
+  "el": {
+    "h1": "Καλώς ήρθατε στο Astro Basics"
+  },
+  "ja": {
+    "h1": "Astro Basicsへようこそ"
+  },
+  "tr": {
+    "h1": "Astro Basics'e Hoş Geldiniz"
+  },
+  "kr": {
+    "h1": "Astro Basics에 오신 것을 환영합니다"
+  },
+  "ar": {
+    "h1": "مرحبًا بك في Astro Basics"
+  }
+}

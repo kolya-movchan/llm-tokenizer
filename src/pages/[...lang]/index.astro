@@ -1,0 +1,24 @@
+---
+import Home from "../../components/Home.astro";
+import Layout from "../../layouts/Layout.astro";
+import { getSEOProps, locales, type Locale } from "../../config/seo";
+import { logger } from "../../utils/logger";
+
+// Define static paths for all supported locales
+export function getStaticPaths() {
+  return locales.map((locale) => ({
+    params: { lang: locale },
+  }));
+}
+
+// Get the locale from the URL parameter and props
+const { lang } = Astro.params;
+
+// Get SEO props for the current locale
+const seoProps = getSEOProps("home", lang as Locale);
+logger.log("SEO props:", seoProps);
+---
+
+<Layout {...seoProps} lang={lang}>
+  <Home lang={lang} />
+</Layout>

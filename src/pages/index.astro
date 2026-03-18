@@ -1,0 +1,11 @@
+---
+import Home from "../components/Home.astro";
+import Layout from "../layouts/Layout.astro";
+import { getSEOProps, defaultLocale } from "../config/seo";
+
+const seoProps = getSEOProps("home");
+---
+
+<Layout {...seoProps} lang={defaultLocale}>
+  <Home lang={defaultLocale} />
+</Layout>

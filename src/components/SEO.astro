@@ -1,0 +1,57 @@
+---
+import { BASE_URL, defaultLocale, type Locale, locales } from "../config/seo";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+  lang?: Locale;
+}
+
+const { title, description, lang }: Props = Astro.props;
+
+const canonical =
+  lang === defaultLocale ? `${BASE_URL}` : `${BASE_URL}/${lang}`;
+
+// Create x-default URL from canonical
+const xDefaultUrl = canonical.toString();
+// Check if URL ends with a locale
+const localePattern = new RegExp(`\\/(${locales.join("|")})\\/?$`);
+// Remove locale and ensure no trailing slash
+const xDefault = xDefaultUrl.replace(localePattern, "").replace(/\/$/, "");
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonical} />
+
+<!-- Hreflang Tags -->
+{
+  locales.map((locale) => (
+    <link
+      rel="alternate"
+      hreflang={locale}
+      href={locale === defaultLocale ? BASE_URL : `${BASE_URL}/${locale}`}
+    />
+  ))
+}
+
+<link rel="alternate" href={xDefault} hreflang="x-default" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content="/og-image.jpg" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonical} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content="/og-image.jpg" />

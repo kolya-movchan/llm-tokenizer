@@ -1,0 +1,19 @@
+---
+import { defaultLocale } from "../config/seo";
+import * as content from "../content/content.json";
+import { Header } from "../react-components/Header";
+
+const { lang } = Astro.props;
+
+const localizedContent = content[lang] || content[defaultLocale];
+const { h1 } = localizedContent;
+---
+
+<div
+  class="h-20 w-full flex items-center justify-center bg-violet-500 text-center text-white"
+>
+  <main>
+    <Header />
+    <h1>{h1}</h1>
+  </main>
+</div>
